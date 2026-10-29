@@ -1,6 +1,7 @@
 # cmipipo-mkdocs-course
 
 A teaching site and template repository built with MkDocs. 
+
 This will accompany the IPO hosted teaching course. 
 
 - Pages are written in `docs/`.
