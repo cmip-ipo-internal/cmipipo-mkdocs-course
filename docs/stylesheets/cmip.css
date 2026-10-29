@@ -1,0 +1,439 @@
+/* CMIP IPO course theme
+ * Tokens taken from the live theme stylesheet:
+ * wcrp-cmip.org/wp-content/themes/cmip/css/main.css
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Akshar:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Brand palette (Bootstrap vars from the CMIP theme) */
+  --cmip-navy: #000546;          /* --bs-primary */
+  --cmip-navy-hover: #000438;    /* --bs-link-hover-color */
+  --cmip-gold: #f2b30d;          /* --bs-secondary / warning */
+  --cmip-crimson: #a40e4c;       /* --bs-danger */
+  --cmip-teal: #64d2cd;          /* --bs-info */
+  --cmip-black: #0e0f0f;         /* --bs-black */
+  --cmip-body: #212529;          /* --bs-body-color */
+  --cmip-white: #ffffff;
+
+  /* Supporting tints used across the site */
+  --cmip-coral: #f47773;         /* CMIP 2026 announcement bar */
+  --cmip-yellow-pale: #f6e2a6;   /* badges, governance cards */
+  --cmip-pink: #e8d0da;          /* news date badges */
+  --cmip-rule: #dee2e6;          /* --bs-border-color */
+
+  /* Fonts */
+  --cmip-font-heading: 'Akshar', sans-serif;
+  --cmip-font-body: 'Plus Jakarta Sans', sans-serif;
+
+  /* Material overrides */
+  --md-default-bg-color: var(--cmip-white);
+  --md-default-fg-color: var(--cmip-body);
+  --md-default-fg-color--light: #6c757d;
+  --md-primary-fg-color: var(--cmip-navy);
+  --md-primary-bg-color: var(--cmip-white);
+  --md-accent-fg-color: var(--cmip-navy);
+  --md-typeset-a-color: var(--cmip-navy);
+  --md-code-bg-color: #f8f9fa;
+  --md-code-fg-color: var(--cmip-body);
+}
+
+body {
+  background: var(--cmip-white);
+  font-family: var(--cmip-font-body);
+  color: var(--cmip-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header: navy bar ────────────────────────────────────────────── */
+.md-header--cmip {
+  background: var(--cmip-navy);
+  color: var(--cmip-white);
+  box-shadow: none;
+}
+
+.md-header--cmip .md-header__inner {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.5rem 1.2rem;
+}
+
+/* Logo. The supplied file is the navy artwork, so it is rendered white here
+   to sit on the navy bar. Remove the filter if you swap in a white version.
+   margin-right:auto pushes the nav, search and repo icon to the right.
+   Material hides the logo below 76.25em; we keep it at every width. */
+.md-header--cmip .md-header__button.md-logo {
+  display: block;
+  margin-right: auto;
+}
+
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 2.6rem;
+  width: auto;
+  filter: brightness(0) invert(1);
+}
+
+.md-header--cmip .md-header__title {
+  display: none;
+}
+
+/* Search: icon only. Material hides this button at 60em and shows an inline
+   search bar instead; we keep the button and collapse the bar until it is
+   opened. Material's own :checked rule then expands it. */
+.md-header--cmip .md-header__button[for="__search"] {
+  display: flex;
+  align-items: center;
+  color: var(--cmip-white);
+  cursor: pointer;
+}
+
+.md-header--cmip .md-header__button[for="__search"]:hover {
+  color: var(--cmip-gold);
+}
+
+/* Collapsed to nothing, and clipped so Material's own magnifier inside the
+   form does not show alongside ours. */
+.md-header--cmip .md-search__inner {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Once opened, Material widens it again; let the results escape the box. */
+[data-md-toggle="search"]:checked ~ .md-header--cmip .md-search__inner {
+  overflow: visible;
+}
+
+/* Repo icon: Material hides it below 76.25em and reserves 11.7rem for a name.
+   We show it at every width and let it shrink to the icon. */
+.md-header--cmip .md-header__source {
+  display: flex;
+  align-items: center;
+  width: auto;
+  max-width: none;
+  margin-left: 0;
+}
+
+.md-header--cmip .md-source {
+  color: var(--cmip-white);
+}
+
+.md-header--cmip .md-source:hover {
+  color: var(--cmip-gold);
+}
+
+.md-header--cmip .md-source__repository {
+  display: none;
+}
+
+/* ── Nav in the header, with dropdowns ───────────────────────────── */
+.cmip-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cmip-nav .cmip-nav__item {
+  height: auto;
+  position: relative;
+}
+
+.cmip-nav .cmip-nav__link {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  opacity: 1;
+  font-family: var(--cmip-font-body);
+  font-size: 0.84rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--cmip-white);
+}
+
+.cmip-nav .cmip-nav__link:hover,
+.cmip-nav .cmip-nav__link:focus,
+.cmip-nav .cmip-nav__item--active > .cmip-nav__link {
+  color: var(--cmip-gold);
+  opacity: 1;
+}
+
+/* Current section also gets a gold underline so the state is unmistakable */
+.cmip-nav .cmip-nav__item--active > .cmip-nav__link {
+  box-shadow: inset 0 -2px 0 0 var(--cmip-gold);
+  padding-bottom: 0.2rem;
+}
+
+.cmip-nav .cmip-nav__link--dropdown {
+  cursor: pointer;
+  user-select: none;
+}
+
+.cmip-nav .cmip-nav__link--dropdown::after {
+  content: "";
+  margin-left: 0.45em;
+  border-left: 0.3em solid transparent;
+  border-right: 0.3em solid transparent;
+  border-top: 0.3em solid currentColor;
+}
+
+/* Dropdown panel: navy with white links turning gold, as in the theme */
+.cmip-nav .cmip-nav__dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.65rem);
+  left: 0;
+  z-index: 20;
+  min-width: 15rem;
+  margin: 0;
+  padding: 0.5rem 0;
+  list-style: none;
+  background: var(--cmip-navy);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.5rem 1rem rgba(14, 15, 15, 0.15);
+}
+
+.cmip-nav .cmip-nav__item--dropdown:hover .cmip-nav__dropdown,
+.cmip-nav .cmip-nav__item--dropdown:focus-within .cmip-nav__dropdown {
+  display: block;
+}
+
+.cmip-nav .cmip-nav__dropdown-link {
+  display: block;
+  padding: 0.25rem 1rem;
+  font-family: var(--cmip-font-body);
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--cmip-white);
+  text-decoration: none;
+}
+
+.cmip-nav .cmip-nav__dropdown-link:hover {
+  color: var(--cmip-gold);
+  background: var(--cmip-navy);
+}
+
+/* A folder inside a folder: a row that flies a submenu out to the side */
+.cmip-nav .cmip-nav__dropdown-item--group {
+  position: relative;
+}
+
+.cmip-nav .cmip-nav__dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cmip-nav .cmip-nav__dropdown-toggle::after {
+  content: "";
+  flex: none;
+  border-top: 0.3em solid transparent;
+  border-bottom: 0.3em solid transparent;
+  border-left: 0.3em solid currentColor;
+}
+
+.cmip-nav .cmip-nav__dropdown-sub {
+  display: none;
+  position: absolute;
+  top: -0.5rem;
+  left: 100%;
+  z-index: 30;
+  min-width: 14rem;
+  margin: 0;
+  padding: 0.5rem 0;
+  list-style: none;
+  background: var(--cmip-navy);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.5rem 1rem rgba(14, 15, 15, 0.15);
+}
+
+.cmip-nav .cmip-nav__dropdown-item--group:hover > .cmip-nav__dropdown-sub,
+.cmip-nav .cmip-nav__dropdown-item--group:focus-within > .cmip-nav__dropdown-sub {
+  display: block;
+}
+
+/* Near the right edge, fly the submenu out to the left instead */
+.cmip-nav .cmip-nav__item:last-child .cmip-nav__dropdown-sub {
+  left: auto;
+  right: 100%;
+}
+
+/* ── Typography: Akshar headings, Plus Jakarta Sans body ─────────── */
+.md-typeset {
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--cmip-body);
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h5 {
+  font-family: var(--cmip-font-heading);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--cmip-navy);
+  letter-spacing: 0;
+}
+
+/* h4 and h6 use the body face on the live site */
+.md-typeset h4,
+.md-typeset h6 {
+  font-family: var(--cmip-font-body);
+  font-weight: 500;
+  color: var(--cmip-navy);
+}
+
+.md-typeset h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  border: 0;
+  padding: 0;
+}
+
+.md-typeset h2 {
+  font-size: 2rem;
+  margin-top: 2rem;
+  border: 0;
+  padding: 0;
+}
+
+.md-typeset h3 {
+  font-size: 1.75rem;
+}
+
+.md-typeset h4 {
+  font-size: 1.4rem;
+}
+
+.md-typeset p,
+.md-typeset li {
+  color: var(--cmip-body);
+}
+
+.md-typeset a {
+  color: var(--cmip-navy);
+  text-decoration: underline;
+}
+
+.md-typeset a:hover {
+  color: var(--cmip-navy-hover);
+}
+
+/* ── Code and tables ─────────────────────────────────────────────── */
+.md-typeset pre,
+.md-typeset pre > code {
+  border-radius: 0.375rem;
+}
+
+.md-typeset code {
+  border-radius: 0.25rem;
+}
+
+.md-typeset table:not([class]) {
+  border: 1px solid var(--cmip-rule);
+  border-radius: 0.375rem;
+}
+
+.md-typeset table:not([class]) th {
+  font-family: var(--cmip-font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--cmip-yellow-pale);
+  color: var(--cmip-navy);
+}
+
+.md-typeset table:not([class]) tr:hover td {
+  background: #f8f9fa;
+}
+
+/* ── Admonitions ─────────────────────────────────────────────────── */
+.md-typeset .admonition,
+.md-typeset details {
+  border: 1px solid var(--cmip-rule);
+  border-left: 4px solid var(--cmip-gold);
+  border-radius: 0.375rem;
+  box-shadow: none;
+  background: var(--cmip-white);
+  font-size: 0.82rem;
+}
+
+.md-typeset .admonition-title,
+.md-typeset summary {
+  font-family: var(--cmip-font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--cmip-navy);
+  background: rgba(242, 179, 13, 0.14);
+}
+
+.md-typeset .admonition-title::before,
+.md-typeset summary::before {
+  background-color: var(--cmip-navy);
+}
+
+.md-typeset .admonition.warning,
+.md-typeset .admonition.danger {
+  border-left-color: var(--cmip-crimson);
+}
+
+.md-typeset .admonition.tip,
+.md-typeset .admonition.info {
+  border-left-color: var(--cmip-teal);
+}
+
+/* ── Sidebar and contents ────────────────────────────────────────── */
+.md-nav__title {
+  font-family: var(--cmip-font-heading);
+  font-weight: 600;
+  color: var(--cmip-navy);
+}
+
+.md-nav__link {
+  font-family: var(--cmip-font-body);
+  font-size: 0.78rem;
+}
+
+.md-nav__link--active,
+.md-nav__link:hover {
+  color: var(--cmip-navy);
+  font-weight: 600;
+}
+
+/* ── Footer: navy, as on the live site ───────────────────────────── */
+.md-footer {
+  background: var(--cmip-navy);
+  color: var(--cmip-white);
+}
+
+.md-footer-meta {
+  background: var(--cmip-navy);
+}
+
+.md-footer__title {
+  font-family: var(--cmip-font-heading);
+  font-weight: 600;
+}
+
+.md-footer__direction,
+.md-footer-meta__inner {
+  font-family: var(--cmip-font-body);
+}
+
+.md-footer__link:hover .md-footer__title,
+.md-footer-meta a:hover {
+  color: var(--cmip-gold);
+}

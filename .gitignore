@@ -1,0 +1,20 @@
+# Built site
+build/
+
+# Python: generated and environment files (source .py files stay tracked)
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+.python-version
+pip-log.txt
+
+# macOS
+.DS_Store
