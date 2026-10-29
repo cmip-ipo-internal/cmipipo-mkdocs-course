@@ -1,6 +1,8 @@
 # cmipipo-mkdocs-course
 
 A teaching site and template repository built with MkDocs. 
+Demo Site: https://cmip-ipo-internal.github.io/cmipipo-mkdocs-course/
+
 
 This will accompany the IPO hosted teaching course. 
 
