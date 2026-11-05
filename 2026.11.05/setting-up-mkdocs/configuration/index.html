@@ -92,10 +92,25 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're not viewing the latest version.
-  <a href="../../..">
-    <strong>Click here to go to the latest version.</strong>
-  </a>
+  There is a newer version of this page:
+  <a href="../../..">See latest</a>
+  <span class="cmip-latest-date"></span><script>
+    (function () {
+      var span = document.currentScript.previousElementSibling;
+      var base = new URL("../../", location.href);
+      fetch(new URL("../versions.json", base))
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .then(function (versions) {
+          for (var i = 0; i < versions.length; i++) {
+            if ((versions[i].aliases || []).indexOf("latest") !== -1) {
+              span.textContent = "(" + (versions[i].title || versions[i].version) + ")";
+              return;
+            }
+          }
+        })
+        .catch(function () {});
+    })();
+  </script>
 
             </div>
             <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("../.."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>

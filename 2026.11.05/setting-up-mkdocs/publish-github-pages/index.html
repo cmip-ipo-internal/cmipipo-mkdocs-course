@@ -90,10 +90,25 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're not viewing the latest version.
-  <a href="../../..">
-    <strong>Click here to go to the latest version.</strong>
-  </a>
+  There is a newer version of this page:
+  <a href="../../..">See latest</a>
+  <span class="cmip-latest-date"></span><script>
+    (function () {
+      var span = document.currentScript.previousElementSibling;
+      var base = new URL("../../", location.href);
+      fetch(new URL("../versions.json", base))
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .then(function (versions) {
+          for (var i = 0; i < versions.length; i++) {
+            if ((versions[i].aliases || []).indexOf("latest") !== -1) {
+              span.textContent = "(" + (versions[i].title || versions[i].version) + ")";
+              return;
+            }
+          }
+        })
+        .catch(function () {});
+    })();
+  </script>
 
             </div>
             <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("../.."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
@@ -591,10 +606,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#publish-a-preview" class="md-nav__link">
+  <a href="#update-the-live-site" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Publish a preview
+        Update the live site
       
     </span>
   </a>
@@ -699,10 +714,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#publish-a-preview" class="md-nav__link">
+  <a href="#update-the-live-site" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Publish a preview
+        Update the live site
       
     </span>
   </a>
@@ -831,7 +846,7 @@ Two things start it:</p>
 <tbody>
 <tr>
 <td>Push to <code>main</code></td>
-<td>A preview called <code>dev</code>. It is hidden from the version dropdown.</td>
+<td>Updates the current <code>latest</code> version. No new version is created, except that the very first push on a new repository creates the first one.</td>
 </tr>
 <tr>
 <td>Publish a GitHub release</td>
@@ -861,7 +876,7 @@ the <code>github-pages</code> environment only accepts the <code>main</code> bra
 <p>Then check <strong>Settings, Actions, General, Workflow permissions</strong>. It must allow
 <strong>Read and write permissions</strong>, because the action stores each version on a
 branch called <code>gh-pages</code>.</p>
-<h2 id="publish-a-preview">Publish a preview<a class="headerlink" href="#publish-a-preview" title="Permanent link">&para;</a></h2>
+<h2 id="update-the-live-site">Update the live site<a class="headerlink" href="#update-the-live-site" title="Permanent link">&para;</a></h2>
 <ol>
 <li>Commit your changes and push to <code>main</code>.</li>
 <li>Open the <strong>Actions</strong> tab and wait for <strong>Deploy versioned site (mike)</strong> to
@@ -869,7 +884,10 @@ branch called <code>gh-pages</code>.</p>
 <li>Open the <strong>Pages</strong> settings page. The link to the live site is shown there.</li>
 </ol>
 <p>The live address looks like <code>https://YOUR-ORG.github.io/cmipipo-mkdocs-course/</code>.
-Until the first release exists, that address redirects to the <code>dev</code> preview.</p>
+This refreshes the version that is already published as <code>latest</code>. It does not
+add a new version, with one exception: on a brand-new repository the first push
+creates the first version, named after that day's date, so the site appears
+straight away.</p>
 <h2 id="publish-a-release">Publish a release<a class="headerlink" href="#publish-a-release" title="Permanent link">&para;</a></h2>
 <ol>
 <li>Open the repository on GitHub and choose <strong>Releases</strong>, then <strong>Draft a new release</strong>.</li>
@@ -883,7 +901,8 @@ it. A second release on the same day is shown as <code>26.Nov.05.2</code>. Pre-r
 drafts are ignored.</p>
 <h2 id="run-it-again-without-a-change">Run it again without a change<a class="headerlink" href="#run-it-again-without-a-change" title="Permanent link">&para;</a></h2>
 <p>Open the <strong>Actions</strong> tab, choose <strong>Deploy versioned site (mike)</strong>, then select
-<strong>Run workflow</strong>. This republishes <code>dev</code>. To republish a release, create a new one.</p>
+<strong>Run workflow</strong>. This refreshes the <code>latest</code> version. To add a new version,
+publish a release.</p>
 <h2 id="if-the-site-does-not-appear">If the site does not appear<a class="headerlink" href="#if-the-site-does-not-appear" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Check that <strong>Source</strong> is set to <strong>GitHub Actions</strong>, not a branch.</li>
