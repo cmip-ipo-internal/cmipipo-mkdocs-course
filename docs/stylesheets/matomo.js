@@ -21,10 +21,8 @@ function init() {
     const TRACKER_URL = "https://webstats.wcrp-cmip.org/matomo.php";
     const MATOMO_JS = "https://webstats.wcrp-cmip.org/matomo.js";
 
-    // Only these hostnames are tracked. Anywhere else (a local `mkdocs serve`, a preview copy)
-    // the banner still shows so it can be tried out, but no visit is sent and Matomo is not loaded.
-    const LIVE_HOSTS = ["wcrp-cmip.github.io"];
-    const LIVE = LIVE_HOSTS.indexOf(location.hostname) !== -1;
+    // Every visit is tracked, from every hostname (the live site, a local server, a preview
+    // copy). There is deliberately no hostname list.
     const PRIVACY_URL = "https://www.wcrp-cmip.org/privacy-policy/";
 
     // Separate banner preferences for each site
@@ -43,7 +41,6 @@ function init() {
     // when Matomo's script loads it REPLACES the global with its own object, so a copy
     // kept from before would silently swallow every later command (such as the Accept button).
     function matomo(...command) {
-        if (!LIVE) return;
         (window._paq = window._paq || []).push(command);
     }
 
@@ -57,12 +54,10 @@ function init() {
     matomo("trackPageView");
     matomo("enableLinkTracking");
 
-    if (LIVE) {
-        const matomoScript = document.createElement("script");
-        matomoScript.async = true;
-        matomoScript.src = MATOMO_JS;
-        document.head.appendChild(matomoScript);
-    }
+    const matomoScript = document.createElement("script");
+    matomoScript.async = true;
+    matomoScript.src = MATOMO_JS;
+    document.head.appendChild(matomoScript);
 
     // ==========================================
     // COOKIE BANNER
