@@ -1,9 +1,9 @@
 name: Deploy versioned site (mike)
 
 # push to main       -> publishes the "dev" version (hidden from the dropdown)
-# GitHub release     -> publishes that release as major.minor (v1.2.3 -> 1.2),
-#                       moves the "latest" alias to it, and makes "latest" the
-#                       default the site root redirects to
+# GitHub release     -> publishes that release under its publish date
+#                       (shown as 26.Nov.05), moves the "latest" alias to it,
+#                       and makes "latest" the default the site root redirects to
 #
 # mike keeps every version on the gh-pages branch, but that branch is only
 # storage. Pages itself is still deployed as an artifact, exactly as before, so
@@ -75,17 +75,31 @@ jobs:
             mike set-default --config-file "$MKDOCS_CONFIG" --push dev
           fi
 
-      # Published release: v1.2.3 becomes version 1.2, so patch releases
-      # replace the previous 1.2.x instead of adding a dropdown entry each time.
-      # Pre-releases are skipped so they never become "latest".
+      # Published release: the version id is the publish date (UTC) as
+      # YYYY.MM.DD, which is what the URL and the dropdown ordering use (dots,
+      # numeric, so mike sorts it correctly). The label readers see in the
+      # dropdown is the same date as YY.Mon.DD, e.g. 26.Nov.05. A second release
+      # on the same day gets .2, .3, ... instead of overwriting the first.
+      # The tag name is only logged. Pre-releases are skipped so they never
+      # become "latest".
       - name: Deploy release
         if: github.event_name == 'release' && !github.event.release.prerelease
         env:
           TAG: ${{ github.event.release.tag_name }}
+          PUBLISHED: ${{ github.event.release.published_at }}
         run: |
-          VERSION="$(echo "${TAG#v}" | cut -d. -f1,2)"
-          echo "Release $TAG -> version $VERSION"
-          mike deploy --config-file "$MKDOCS_CONFIG" --push --update-aliases "$VERSION" latest
+          DATE="$(date -u -d "$PUBLISHED" +%Y.%m.%d)"
+          LABEL="$(LC_ALL=C date -u -d "$PUBLISHED" +%y.%b.%d)"
+          VERSION="$DATE"
+          TITLE="$LABEL"
+          N=2
+          while mike list --config-file "$MKDOCS_CONFIG" | grep -qE "^${VERSION}( |$)"; do
+            VERSION="${DATE}.${N}"
+            TITLE="${LABEL}.${N}"
+            N=$((N + 1))
+          done
+          echo "Release $TAG -> version $VERSION (shown as $TITLE)"
+          mike deploy --config-file "$MKDOCS_CONFIG" --push --title "$TITLE" --update-aliases "$VERSION" latest
           mike set-default --config-file "$MKDOCS_CONFIG" --push latest
 
       # Package the stored versions as the Pages artifact. The worktree's .git

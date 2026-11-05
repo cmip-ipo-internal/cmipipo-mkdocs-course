@@ -24,5 +24,7 @@ make dev
 
 ## Publish
 
-Pushing to `main` publishes the site automatically. See
-[Publish to GitHub Pages](setting-up-mkdocs/publish-github-pages.md) for the one-time setting.
+Pushing to `main` publishes a hidden `dev` preview. Publishing a release on GitHub
+publishes a numbered version that visitors see. See
+[Publish to GitHub Pages](setting-up-mkdocs/publish-github-pages.md) for the
+one-time settings and the steps.
