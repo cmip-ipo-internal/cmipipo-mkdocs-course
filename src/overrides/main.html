@@ -9,13 +9,11 @@
 {% endblock %}
 
 {#-
-  Outdated-version banner. Material shows this only when mike versioning is on
+  Newer-version notice. Material shows this only when mike versioning is on
   and the page being viewed is NOT the version named in extra.version.default.
   The link goes to the site root, which mike redirects to the default version.
 -#}
 {% block outdated %}
-  You're not viewing the latest version.
-  <a href="{{ '../' ~ base_url }}">
-    <strong>Click here to go to the latest version.</strong>
-  </a>
+  There is a newer version of this page:
+  <a href="{{ '../' ~ base_url }}">Click here</a>
 {% endblock %}

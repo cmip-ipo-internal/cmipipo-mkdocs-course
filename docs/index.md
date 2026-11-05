@@ -24,7 +24,7 @@ make dev
 
 ## Publish
 
-Pushing to `main` publishes a hidden `dev` preview. Publishing a release on GitHub
-publishes a numbered version that visitors see. See
+Pushing to `main` updates the current `latest` version. Publishing a release on GitHub
+creates a new version. See
 [Publish to GitHub Pages](setting-up-mkdocs/publish-github-pages.md) for the
 one-time settings and the steps.

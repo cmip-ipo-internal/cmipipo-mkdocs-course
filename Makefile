@@ -30,7 +30,7 @@ help:
 	@echo ""
 	@echo "  Versioning (mike) - nothing here pushes to GitHub:"
 	@echo "  make versions        List versions on the local gh-pages branch"
-	@echo "  make deploy-local    Build a version into local gh-pages (VERSION=dev ALIAS=latest)"
+	@echo "  make deploy-local    Build a version into local gh-pages (VERSION=test ALIAS=latest)"
 	@echo "  make serve-versions  Preview every local version with the dropdown"
 	@echo "  make try-versions    Build 0.9 and 1.0 (latest) locally and serve them"
 	@echo ""
@@ -69,7 +69,7 @@ clean:
 # Versions live on the gh-pages branch. GitHub Actions does the real publishing
 # (see .github/workflows/pages.yml); these targets let you try it locally.
 # None of them push. deploy-local only commits to your LOCAL gh-pages branch.
-VERSION ?= dev
+VERSION ?= test
 ALIAS   ?=
 
 versions:

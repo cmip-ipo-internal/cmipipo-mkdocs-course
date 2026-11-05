@@ -5,7 +5,7 @@ Two things start it:
 
 | What you do | What gets published |
 | --- | --- |
-| Push to `main` | A preview called `dev`. It is hidden from the version dropdown. |
+| Push to `main` | Updates the current `latest` version. No new version is created. |
 | Publish a GitHub release | A numbered version, shown as a date such as `26.Nov.05`. It becomes the version visitors see. |
 
 Versions are managed by [mike](https://github.com/jimporter/mike). The version
@@ -35,7 +35,7 @@ Then check **Settings, Actions, General, Workflow permissions**. It must allow
 **Read and write permissions**, because the action stores each version on a
 branch called `gh-pages`.
 
-## Publish a preview
+## Update the live site
 
 1. Commit your changes and push to `main`.
 2. Open the **Actions** tab and wait for **Deploy versioned site (mike)** to
@@ -43,7 +43,10 @@ branch called `gh-pages`.
 3. Open the **Pages** settings page. The link to the live site is shown there.
 
 The live address looks like `https://YOUR-ORG.github.io/cmipipo-mkdocs-course/`.
-Until the first release exists, that address redirects to the `dev` preview.
+This refreshes the version that is already published as `latest`. It does not
+add a new version. Until the first release exists there is nothing to update, so
+nothing is published and the run only checks that the docs build. Publish a
+release first.
 
 ## Publish a release
 
@@ -60,7 +63,8 @@ drafts are ignored.
 ## Run it again without a change
 
 Open the **Actions** tab, choose **Deploy versioned site (mike)**, then select
-**Run workflow**. This republishes `dev`. To republish a release, create a new one.
+**Run workflow**. This refreshes the `latest` version. To add a new version,
+publish a release.
 
 ## If the site does not appear
 
