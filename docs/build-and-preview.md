@@ -13,16 +13,16 @@ If the preview does not show your change, run `make kill` and then `make dev` ag
 
 ## Versions
 
-The published site keeps several versions side by side, managed by [mike](https://github.com/jimporter/mike). The version dropdown in the header lists them, and any page that is not the latest shows a banner linking back to it.
+The published site keeps several versions side by side, managed by [mike](https://github.com/jimporter/mike). The version dropdown is a small label in the top-right corner of the header. Older releases show a slim "There is a newer version of this page" notice linking to the latest.
 
 | What you do | What gets published |
 | --- | --- |
-| Push to `main` | The `dev` version, hidden from the dropdown but reachable by its address |
+| Push to `main` | Updates the content of the current `latest` version. No new version is created. |
 | Publish a GitHub release (any tag) | A version named after the publish date, shown in the dropdown as `26.Nov.05`, which becomes `latest` |
 
 To cut a release, create a release on GitHub (**Releases, Draft a new release**) and publish it. The dropdown label is the publish date (UTC) as `YY.Mon.DD`, whatever the tag is called. The address uses the sortable form `2026.11.05`, so the page lives at `/2026.11.05/`. A second release on the same day becomes `26.Nov.05.2`, and so on. Pre-releases are ignored.
 
-The address of the site itself (without a version) redirects to `latest`. Until the first release exists it redirects to `dev`.
+The address of the site itself (without a version) redirects to `latest`. Until the first release exists nothing is published: a push to `main` only checks that the docs build.
 
 | Command | What it does |
 | --- | --- |

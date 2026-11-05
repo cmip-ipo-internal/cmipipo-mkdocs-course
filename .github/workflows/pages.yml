@@ -1,12 +1,15 @@
 name: Deploy versioned site (mike)
 
-# push to main       -> publishes the "dev" version (hidden from the dropdown)
-# GitHub release     -> publishes that release under its publish date
-#                       (shown as 26.Nov.05), moves the "latest" alias to it,
-#                       and makes "latest" the default the site root redirects to
+# push to main       -> updates the content of the current "latest" version.
+#                       It never creates a new version. Before the first release
+#                       exists there is nothing to update, so it only checks that
+#                       the docs build.
+# GitHub release     -> creates a new version named after the publish date
+#                       (shown as 26.Nov.05), makes it "latest", and makes
+#                       "latest" the default the site root redirects to.
 #
 # mike keeps every version on the gh-pages branch, but that branch is only
-# storage. Pages itself is still deployed as an artifact, exactly as before, so
+# storage. Pages itself is deployed as an artifact, so
 # Settings > Pages > Source stays on "GitHub Actions".
 
 on:
@@ -36,6 +39,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      # "true" only when something was published and needs deploying to Pages.
+      published: ${{ steps.release.outputs.published || steps.update.outputs.published }}
     steps:
       # mike needs the full history and the gh-pages branch, not a shallow clone.
       - uses: actions/checkout@v4
@@ -56,23 +62,37 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      # Push to main (or a manual run): publish "dev" and hide it from readers.
-      # It stays reachable by its URL.
-      - name: Deploy dev
+      # Push to main (or a manual run): refresh whatever version is "latest",
+      # keeping its id and label. No new version is created. On a repository
+      # that has never had a release (no gh-pages branch yet, or no "latest")
+      # this only builds, to catch errors early, and publishes nothing.
+      - name: Update latest
+        id: update
         if: github.event_name != 'release'
         run: |
-          mike deploy --config-file "$MKDOCS_CONFIG" --push dev
-          mike props --config-file "$MKDOCS_CONFIG" --push --set hidden=true dev
-
-      # Until a release exists there is no "latest", so the site root would be
-      # empty. Point it at dev for now; the first release replaces this.
-      - name: Point root at dev until a release exists
-        if: github.event_name != 'release'
-        run: |
-          if mike list --config-file "$MKDOCS_CONFIG" | grep -q '\[latest\]'; then
-            echo "A latest release exists; leaving the root redirect alone."
+          INFO="$(mike list --config-file "$MKDOCS_CONFIG" --json 2>/dev/null | python -c '
+          import sys, json
+          try:
+              data = json.load(sys.stdin)
+          except ValueError:
+              data = []
+          for v in data:
+              if "latest" in v.get("aliases", []):
+                  print(v["version"])
+                  print(v.get("title") or v["version"])
+                  break
+          ' || true)"
+          if [ -z "$INFO" ]; then
+            echo "No release exists yet, so there is no latest version to update."
+            echo "Building only, to check the docs."
+            mkdocs build --config-file "$MKDOCS_CONFIG"
+            echo "published=false" >> "$GITHUB_OUTPUT"
           else
-            mike set-default --config-file "$MKDOCS_CONFIG" --push dev
+            VERSION="$(echo "$INFO" | sed -n 1p)"
+            TITLE="$(echo "$INFO" | sed -n 2p)"
+            echo "Updating latest ($VERSION, shown as $TITLE) from this push"
+            mike deploy --config-file "$MKDOCS_CONFIG" --push --title "$TITLE" --update-aliases "$VERSION" latest
+            echo "published=true" >> "$GITHUB_OUTPUT"
           fi
 
       # Published release: the version id is the publish date (UTC) as
@@ -81,8 +101,10 @@ jobs:
       # dropdown is the same date as YY.Mon.DD, e.g. 26.Nov.05. A second release
       # on the same day gets .2, .3, ... instead of overwriting the first.
       # The tag name is only logged. Pre-releases are skipped so they never
-      # become "latest".
+      # become "latest". Works on a repository with no gh-pages branch yet:
+      # mike creates it.
       - name: Deploy release
+        id: release
         if: github.event_name == 'release' && !github.event.release.prerelease
         env:
           TAG: ${{ github.event.release.tag_name }}
@@ -92,8 +114,21 @@ jobs:
           LABEL="$(LC_ALL=C date -u -d "$PUBLISHED" +%y.%b.%d)"
           VERSION="$DATE"
           TITLE="$LABEL"
+          # mike list prints the title first, e.g. "26.Nov.05" (2026.11.05), so
+          # compare against the version ids in its JSON output instead. Empty
+          # output (no gh-pages branch yet) means no versions exist.
+          exists() {
+            mike list --config-file "$MKDOCS_CONFIG" --json 2>/dev/null | python -c '
+          import sys, json
+          try:
+              data = json.load(sys.stdin)
+          except ValueError:
+              data = []
+          sys.exit(0 if any(v["version"] == sys.argv[1] for v in data) else 1)
+          ' "$1"
+          }
           N=2
-          while mike list --config-file "$MKDOCS_CONFIG" | grep -qE "^${VERSION}( |$)"; do
+          while exists "$VERSION"; do
             VERSION="${DATE}.${N}"
             TITLE="${LABEL}.${N}"
             N=$((N + 1))
@@ -101,20 +136,24 @@ jobs:
           echo "Release $TAG -> version $VERSION (shown as $TITLE)"
           mike deploy --config-file "$MKDOCS_CONFIG" --push --title "$TITLE" --update-aliases "$VERSION" latest
           mike set-default --config-file "$MKDOCS_CONFIG" --push latest
+          echo "published=true" >> "$GITHUB_OUTPUT"
 
       # Package the stored versions as the Pages artifact. The worktree's .git
       # pointer file is removed so it is not uploaded with the site.
       - name: Collect site from gh-pages
+        if: steps.release.outputs.published == 'true' || steps.update.outputs.published == 'true'
         run: |
           git worktree add _site gh-pages
           rm -f _site/.git
 
       - uses: actions/upload-pages-artifact@v3
+        if: steps.release.outputs.published == 'true' || steps.update.outputs.published == 'true'
         with:
           path: _site
 
   deploy:
     needs: build
+    if: needs.build.outputs.published == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
