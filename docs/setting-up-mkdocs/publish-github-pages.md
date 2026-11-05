@@ -5,7 +5,7 @@ Two things start it:
 
 | What you do | What gets published |
 | --- | --- |
-| Push to `main` | Updates the current `latest` version. No new version is created. |
+| Push to `main` | Updates the current `latest` version. No new version is created, except that the very first push on a new repository creates the first one. |
 | Publish a GitHub release | A numbered version, shown as a date such as `26.Nov.05`. It becomes the version visitors see. |
 
 Versions are managed by [mike](https://github.com/jimporter/mike). The version
@@ -44,9 +44,9 @@ branch called `gh-pages`.
 
 The live address looks like `https://YOUR-ORG.github.io/cmipipo-mkdocs-course/`.
 This refreshes the version that is already published as `latest`. It does not
-add a new version. Until the first release exists there is nothing to update, so
-nothing is published and the run only checks that the docs build. Publish a
-release first.
+add a new version, with one exception: on a brand-new repository the first push
+creates the first version, named after that day's date, so the site appears
+straight away.
 
 ## Publish a release
 

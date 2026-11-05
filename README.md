@@ -9,12 +9,13 @@ This will accompany the IPO hosted teaching course.
 - Pages are written in `docs/`.
 - Settings and the page list are in `src/mkdocs.yml`.
 - Run `make dev` to preview, `make build` to build into `build/`.
-- Pushing to `main` updates the current `latest` version, but does not create a new one.
+- Pushing to `main` updates the current `latest` version, but does not create a new one (the very first push on a new repository creates the first version).
 
 ## Releasing a version
 
-A new version of the site is only created by **publishing a release on GitHub**.
-Pushing to `main` or creating a tag on its own does not make one.
+Once the first version exists, a new version of the site is only created by
+**publishing a release on GitHub**. Pushing to `main` or creating a tag on its own
+does not make one.
 
 1. On GitHub, open **Releases**, then **Draft a new release**.
 2. Choose or create a tag (any name) and set the target to `main`.

@@ -22,7 +22,7 @@ The published site keeps several versions side by side, managed by [mike](https:
 
 To cut a release, create a release on GitHub (**Releases, Draft a new release**) and publish it. The dropdown label is the publish date (UTC) as `YY.Mon.DD`, whatever the tag is called. The address uses the sortable form `2026.11.05`, so the page lives at `/2026.11.05/`. A second release on the same day becomes `26.Nov.05.2`, and so on. Pre-releases are ignored.
 
-The address of the site itself (without a version) redirects to `latest`. Until the first release exists nothing is published: a push to `main` only checks that the docs build.
+The address of the site itself (without a version) redirects to `latest`. On a brand-new repository the first push to `main` creates the first version, named after that day's date, so the site is never blank.
 
 | Command | What it does |
 | --- | --- |
