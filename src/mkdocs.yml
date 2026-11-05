@@ -18,7 +18,7 @@ theme:
   name: material
   language: en
   custom_dir: overrides
-  logo: assets/cmip-logo.svg
+  logo: assets/cmip-logo-white.svg
   favicon: assets/cmip-icon.svg
   icon:
     repo: fontawesome/brands/git-alt
@@ -48,19 +48,46 @@ plugins:
       scripts: []
   - literate-nav:
       nav_file: SUMMARY.md
+  # Redirects for pages that are moved or renamed. Keys are the OLD page path
+  # (relative to docs/), values are the NEW page path. Example:
+  #   old-page.md: setting-up-mkdocs/new-page.md
+  # Redirects are relative, so they stay inside the version being viewed.
+  - redirects:
+      redirect_maps: {}
 
 hooks:
   - hooks/matomo.py
 
 extra:
+  # Versioning is handled by mike. The dropdown reads versions.json at the root
+  # of the published site; 'default: latest' decides which version is NOT
+  # flagged as outdated by the banner in overrides/main.html.
+  version:
+    provider: mike
+    default: latest
   # Top-level nav titles kept out of the top bar (still in the sidebar).
   # Empty: the whole nav is shown in the top bar.
   nav_exclude: []
+
+  # Warning banner for copies of the site served from an unapproved hostname
+  # (see stylesheets/fallback-banner.js). Same idea as the cmip-fallback
+  # WordPress plugin. Add every hostname that is allowed to serve the site;
+  # "*.example.org" matches any subdomain. Set enabled: false to turn it off.
+  fallback_banner:
+    enabled: true
+    hostnames:
+      - localhost
+      - 127.0.0.1
+      - cmip-ipo-internal.github.io
+    text: This is not the official version of this site.
+    url: https://cmip-ipo-internal.github.io/cmipipo-mkdocs-course/
+    link_text: Go to the official site
 
 extra_css:
   - stylesheets/cmip.css
 
 extra_javascript:
+  - stylesheets/fallback-banner.js
   - https://unpkg.com/mermaid@10/dist/mermaid.min.js
 
 markdown_extensions:
