@@ -92,25 +92,10 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  There is a newer version of this page:
-  <a href="../..">See latest</a>
-  <span class="cmip-latest-date"></span><script>
-    (function () {
-      var span = document.currentScript.previousElementSibling;
-      var base = new URL("../", location.href);
-      fetch(new URL("../versions.json", base))
-        .then(function (r) { return r.ok ? r.json() : []; })
-        .then(function (versions) {
-          for (var i = 0; i < versions.length; i++) {
-            if ((versions[i].aliases || []).indexOf("latest") !== -1) {
-              span.textContent = "(" + (versions[i].title || versions[i].version) + ")";
-              return;
-            }
-          }
-        })
-        .catch(function () {});
-    })();
-  </script>
+  You're not viewing the latest version.
+  <a href="../..">
+    <strong>Click here to go to the latest version.</strong>
+  </a>
 
             </div>
             <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL(".."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
@@ -757,7 +742,7 @@
 </table>
 <p>If the preview does not show your change, run <code>make kill</code> and then <code>make dev</code> again.</p>
 <h2 id="versions">Versions<a class="headerlink" href="#versions" title="Permanent link">&para;</a></h2>
-<p>The published site keeps several versions side by side, managed by <a href="https://github.com/jimporter/mike">mike</a>. The version dropdown is a small label in the top-right corner of the header. Older releases show a slim "There is a newer version of this page" notice linking to the latest.</p>
+<p>The published site keeps several versions side by side, managed by <a href="https://github.com/jimporter/mike">mike</a>. The version dropdown in the header lists them, and any page that is not the latest shows a banner linking back to it.</p>
 <table>
 <thead>
 <tr>
@@ -768,7 +753,7 @@
 <tbody>
 <tr>
 <td>Push to <code>main</code></td>
-<td>Updates the content of the current <code>latest</code> version. No new version is created, except that the very first push on a new repository creates the first one.</td>
+<td>The <code>dev</code> version, hidden from the dropdown but reachable by its address</td>
 </tr>
 <tr>
 <td>Publish a GitHub release (any tag)</td>
@@ -777,7 +762,7 @@
 </tbody>
 </table>
 <p>To cut a release, create a release on GitHub (<strong>Releases, Draft a new release</strong>) and publish it. The dropdown label is the publish date (UTC) as <code>YY.Mon.DD</code>, whatever the tag is called. The address uses the sortable form <code>2026.11.05</code>, so the page lives at <code>/2026.11.05/</code>. A second release on the same day becomes <code>26.Nov.05.2</code>, and so on. Pre-releases are ignored.</p>
-<p>The address of the site itself (without a version) redirects to <code>latest</code>. On a brand-new repository the first push to <code>main</code> creates the first version, named after that day's date, so the site is never blank.</p>
+<p>The address of the site itself (without a version) redirects to <code>latest</code>. Until the first release exists it redirects to <code>dev</code>.</p>
 <table>
 <thead>
 <tr>

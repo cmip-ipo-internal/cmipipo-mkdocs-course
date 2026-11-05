@@ -90,25 +90,10 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  There is a newer version of this page:
-  <a href="../.">See latest</a>
-  <span class="cmip-latest-date"></span><script>
-    (function () {
-      var span = document.currentScript.previousElementSibling;
-      var base = new URL("./", location.href);
-      fetch(new URL("../versions.json", base))
-        .then(function (r) { return r.ok ? r.json() : []; })
-        .then(function (versions) {
-          for (var i = 0; i < versions.length; i++) {
-            if ((versions[i].aliases || []).indexOf("latest") !== -1) {
-              span.textContent = "(" + (versions[i].title || versions[i].version) + ")";
-              return;
-            }
-          }
-        })
-        .catch(function () {});
-    })();
-  </script>
+  You're not viewing the latest version.
+  <a href="../.">
+    <strong>Click here to go to the latest version.</strong>
+  </a>
 
             </div>
             <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
@@ -722,8 +707,8 @@ see <a href="files/">how it works</a>, finally working up to adding your own con
 </code></pre></div>
 <p><code>make dev</code> opens the site at <code>http://127.0.0.1:48217</code>. Save a file and the page refreshes.</p>
 <h2 id="publish">Publish<a class="headerlink" href="#publish" title="Permanent link">&para;</a></h2>
-<p>Pushing to <code>main</code> updates the current <code>latest</code> version (the very first push creates
-the first version). Publishing a release on GitHub creates a new version. See
+<p>Pushing to <code>main</code> publishes a hidden <code>dev</code> preview. Publishing a release on GitHub
+publishes a numbered version that visitors see. See
 <a href="setting-up-mkdocs/publish-github-pages/">Publish to GitHub Pages</a> for the
 one-time settings and the steps.</p>
 

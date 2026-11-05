@@ -3,7 +3,7 @@
  * wcrp-cmip.org/wp-content/themes/cmip/css/main.css
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Akshar:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Lexend:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Akshar:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
   /* Brand palette (Bootstrap vars from the CMIP theme) */
@@ -270,146 +270,81 @@ body {
 }
 
 /* ── Version selector (mike) ─────────────────────────────────────── */
-/* The selector is a small label pinned to the top-right corner of the header
-   (the header is the positioned ancestor, so this is the true page corner, not
-   the corner of the centred content grid). Material positions
-   .md-header__topic absolutely for its title swap; here it is only a host for
-   the dropdown, so put it back in normal flow. */
+/* Material positions .md-header__topic absolutely for its title swap; here it
+   is only a host for the dropdown, so put it back in normal flow. */
 .cmip-version {
-  position: absolute;
-  top: 0.3rem;
-  right: 0.9rem;
-  z-index: 5;
-  line-height: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .cmip-version .md-header__topic {
-  position: static;
-  display: block;
+  position: relative;
+  display: flex;
+  align-items: center;
   transform: none;
   opacity: 1;
 }
 
 .cmip-version .md-version {
-  height: auto;
   font-family: var(--cmip-font-body);
-  font-size: 0.66rem;
+  font-size: 0.84rem;
   font-weight: 500;
-  line-height: 1;
 }
 
 .cmip-version .md-version__current {
-  display: inline-block;
-  margin: 0;
-  padding: 0.12rem 0.4rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.25rem;
-  color: rgba(255, 255, 255, 0.85);
-  letter-spacing: 0.02em;
+  color: var(--cmip-white);
 }
 
 .cmip-version .md-version__current:hover,
 .cmip-version .md-version:focus-within .md-version__current {
   color: var(--cmip-gold);
-  border-color: var(--cmip-gold);
 }
 
-/* Only one version exists (for example before a second release), so there is
-   nothing to choose: show the label plainly, with no empty menu. */
-.cmip-version .md-version__list:empty {
-  display: none;
-}
-
-.cmip-version .md-version:has(.md-version__list:empty) .md-version__current {
-  cursor: default;
-}
-
-.cmip-version .md-version:has(.md-version__list:empty) .md-version__current::after {
-  display: none;
-}
-
-/* List: a small light card, deliberately unlike the navy nav dropdowns so the
-   version picker reads as a utility, not a menu. */
+/* List: navy panel to match the nav dropdowns */
 .cmip-version .md-version__list {
-  top: 1.4rem;
-  right: 0;
-  left: auto;
-  width: max-content;
-  min-width: 4.5rem;
-  margin: 0;
-  font-size: 0.66rem;
-  background: var(--cmip-white);
-  color: var(--cmip-navy);
-  border: 1px solid var(--cmip-rule);
-  border-radius: 0.25rem;
-  box-shadow: 0 0.15rem 0.5rem rgba(14, 15, 15, 0.12);
+  background: var(--cmip-navy);
+  color: var(--cmip-white);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.5rem 1rem rgba(14, 15, 15, 0.15);
 }
 
 .cmip-version .md-version__link {
-  padding: 0.3rem 0.65rem;
-  color: var(--cmip-navy);
-  line-height: 1.2;
+  color: var(--cmip-white);
 }
 
 .cmip-version .md-version__link:hover,
 .cmip-version .md-version__link:focus {
-  color: var(--cmip-navy);
-  background: var(--cmip-yellow-pale);
+  color: var(--cmip-gold);
 }
 
-/* Newer-version notice: a thin whitesmoke strip, centred, in CMIP cyan and
-   Lexend. Kept to roughly one line of text high so it stays out of the way;
-   the unofficial-copy warning below is the louder of the two.
-   Material's markup is <div data-md-component="outdated"> wrapping
-   <aside class="md-banner">, so the bar is the CHILD of the data attribute. */
-[data-md-component="outdated"] .md-banner {
-  background: whitesmoke;
-  color: var(--cmip-teal);
-  border-bottom: 1px solid var(--cmip-rule);
-  font-family: 'Lexend', var(--cmip-font-body);
-  line-height: 1.2;
+/* Outdated-version banner: crimson, as the brand's warning colour */
+[data-md-component="outdated"] {
+  background: var(--cmip-crimson);
+  color: var(--cmip-white);
 }
 
-[data-md-component="outdated"] .md-banner .md-banner__inner {
-  margin: 0.08rem auto;
-  font-size: 0.66rem;
-  line-height: 1.2;
-  text-align: center;
-}
-
-[data-md-component="outdated"] .md-banner a {
-  color: var(--cmip-navy);
-  font-weight: 600;
+[data-md-component="outdated"] a {
+  color: var(--cmip-white);
   text-decoration: underline;
 }
 
-[data-md-component="outdated"] .md-banner a:hover {
-  color: var(--cmip-navy-hover);
-}
-
 /* ── Fallback banner (unapproved hostname) ────────────────────────────────── */
-/* Unofficial-copy warning. Inserted by stylesheets/fallback-banner.js as the
-   first thing on the page. Pale gold with a gold rule and navy text, in the
-   site's own font: noticeable, but part of the theme rather than a shout. */
+/* Inserted by stylesheets/fallback-banner.js as the first thing on the page. */
 .cmip-fallback-banner {
-  padding: 0.4rem 1.2rem;
-  background: var(--cmip-yellow-pale);
-  color: var(--cmip-navy);
-  border-bottom: 2px solid var(--cmip-gold);
+  padding: 0.55rem 1.2rem;
+  background: var(--cmip-gold);
+  color: var(--cmip-black);
   font-family: var(--cmip-font-body);
-  font-size: 0.74rem;
-  font-weight: 500;
+  font-size: 0.82rem;
+  font-weight: 600;
   text-align: center;
 }
 
 .cmip-fallback-banner a {
-  color: var(--cmip-navy);
-  font-weight: 700;
+  color: var(--cmip-black);
   text-decoration: underline;
-}
-
-.cmip-fallback-banner a:hover {
-  color: var(--cmip-navy-hover);
 }
 
 /* ── Typography: Akshar headings, Plus Jakarta Sans body ─────────── */
