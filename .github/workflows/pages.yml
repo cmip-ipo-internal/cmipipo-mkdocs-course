@@ -1,9 +1,10 @@
 name: Deploy versioned site (mike)
 
-# push to main       -> updates the content of the current "latest" version.
-#                       It never creates a new version. Before the first release
-#                       exists there is nothing to update, so it only checks that
-#                       the docs build.
+# push to main       -> updates the content of the current "latest" version. It
+#                       does not create a new version, with one exception: if no
+#                       version exists yet (a brand-new repository), the first
+#                       push creates the first one, named after today's date, so
+#                       the site is never blank.
 # GitHub release     -> creates a new version named after the publish date
 #                       (shown as 26.Nov.05), makes it "latest", and makes
 #                       "latest" the default the site root redirects to.
@@ -62,10 +63,23 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      # A fresh checkout only has the remote-tracking branch origin/gh-pages,
+      # and `mike list` reads only a LOCAL gh-pages, so without this step it
+      # reports no versions at all. On a repository that has never published,
+      # the remote branch does not exist yet and this is skipped.
+      - name: Fetch stored versions
+        run: |
+          if git ls-remote --exit-code --heads origin gh-pages > /dev/null 2>&1; then
+            git fetch origin gh-pages:gh-pages
+          else
+            echo "No gh-pages branch yet (nothing has been published)."
+          fi
+
       # Push to main (or a manual run): refresh whatever version is "latest",
-      # keeping its id and label. No new version is created. On a repository
-      # that has never had a release (no gh-pages branch yet, or no "latest")
-      # this only builds, to catch errors early, and publishes nothing.
+      # keeping its id and label. No new version is created. The one exception
+      # is a repository with no "latest" at all (no gh-pages branch yet): the
+      # first push then creates the first version, named after today's date
+      # exactly as a release would be, so the site is never blank.
       - name: Update latest
         id: update
         if: github.event_name != 'release'
@@ -83,17 +97,37 @@ jobs:
                   break
           ' || true)"
           if [ -z "$INFO" ]; then
-            echo "No release exists yet, so there is no latest version to update."
-            echo "Building only, to check the docs."
-            mkdocs build --config-file "$MKDOCS_CONFIG"
-            echo "published=false" >> "$GITHUB_OUTPUT"
+            # Nothing is published yet: create the first version from this push.
+            DATE="$(date -u +%Y.%m.%d)"
+            LABEL="$(LC_ALL=C date -u +%y.%b.%d)"
+            VERSION="$DATE"
+            TITLE="$LABEL"
+            exists() {
+              mike list --config-file "$MKDOCS_CONFIG" --json 2>/dev/null | python -c '
+          import sys, json
+          try:
+              data = json.load(sys.stdin)
+          except ValueError:
+              data = []
+          sys.exit(0 if any(v["version"] == sys.argv[1] for v in data) else 1)
+          ' "$1"
+            }
+            N=2
+            while exists "$VERSION"; do
+              VERSION="${DATE}.${N}"
+              TITLE="${LABEL}.${N}"
+              N=$((N + 1))
+            done
+            echo "No version exists yet. Creating the first one from this push: $VERSION (shown as $TITLE)"
+            mike deploy --config-file "$MKDOCS_CONFIG" --push --title "$TITLE" --update-aliases "$VERSION" latest
+            mike set-default --config-file "$MKDOCS_CONFIG" --push latest
           else
             VERSION="$(echo "$INFO" | sed -n 1p)"
             TITLE="$(echo "$INFO" | sed -n 2p)"
             echo "Updating latest ($VERSION, shown as $TITLE) from this push"
             mike deploy --config-file "$MKDOCS_CONFIG" --push --title "$TITLE" --update-aliases "$VERSION" latest
-            echo "published=true" >> "$GITHUB_OUTPUT"
           fi
+          echo "published=true" >> "$GITHUB_OUTPUT"
 
       # Published release: the version id is the publish date (UTC) as
       # YYYY.MM.DD, which is what the URL and the dropdown ordering use (dots,
