@@ -3,7 +3,7 @@
  * wcrp-cmip.org/wp-content/themes/cmip/css/main.css
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Akshar:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Akshar:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Lexend:wght@300;400;500;600&display=swap');
 
 :root {
   /* Brand palette (Bootstrap vars from the CMIP theme) */
@@ -357,29 +357,33 @@ body {
   background: var(--cmip-yellow-pale);
 }
 
-/* Newer-version notice: a slim, quiet strip in the site's own colours. It is
-   deliberately small and low-contrast; the unofficial-copy warning below is
-   the louder of the two. */
-.md-banner[data-md-component="outdated"] {
-  background: #f8f9fa;
-  color: var(--md-default-fg-color--light);
+/* Newer-version notice: a thin whitesmoke strip, centred, in CMIP cyan and
+   Lexend. Kept to roughly one line of text high so it stays out of the way;
+   the unofficial-copy warning below is the louder of the two.
+   Material's markup is <div data-md-component="outdated"> wrapping
+   <aside class="md-banner">, so the bar is the CHILD of the data attribute. */
+[data-md-component="outdated"] .md-banner {
+  background: whitesmoke;
+  color: var(--cmip-teal);
   border-bottom: 1px solid var(--cmip-rule);
-  font-family: var(--cmip-font-body);
+  font-family: 'Lexend', var(--cmip-font-body);
+  line-height: 1.2;
 }
 
-.md-banner[data-md-component="outdated"] .md-banner__inner {
-  margin: 0.3rem auto;
-  font-size: 0.68rem;
+[data-md-component="outdated"] .md-banner .md-banner__inner {
+  margin: 0.08rem auto;
+  font-size: 0.66rem;
+  line-height: 1.2;
   text-align: center;
 }
 
-.md-banner[data-md-component="outdated"] a {
+[data-md-component="outdated"] .md-banner a {
   color: var(--cmip-navy);
   font-weight: 600;
   text-decoration: underline;
 }
 
-.md-banner[data-md-component="outdated"] a:hover {
+[data-md-component="outdated"] .md-banner a:hover {
   color: var(--cmip-navy-hover);
 }
 

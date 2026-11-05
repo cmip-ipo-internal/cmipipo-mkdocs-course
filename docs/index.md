@@ -24,7 +24,7 @@ make dev
 
 ## Publish
 
-Pushing to `main` updates the current `latest` version. Publishing a release on GitHub
-creates a new version. See
+Pushing to `main` updates the current `latest` version (the very first push creates
+the first version). Publishing a release on GitHub creates a new version. See
 [Publish to GitHub Pages](setting-up-mkdocs/publish-github-pages.md) for the
 one-time settings and the steps.
