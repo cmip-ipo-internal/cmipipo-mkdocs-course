@@ -59,8 +59,9 @@ body {
   padding: 0.5rem 1.2rem;
 }
 
-/* Logo. The supplied file is the navy artwork, so it is rendered white here
-   to sit on the navy bar. Remove the filter if you swap in a white version.
+/* Logo. The supplied file (assets/cmip-logo-white.svg) is white artwork, so it
+   sits on the navy bar as-is. If you swap in a navy version, add
+   filter: brightness(0) invert(1) to the img/svg rule below.
    margin-right:auto pushes the nav, search and repo icon to the right.
    Material hides the logo below 76.25em; we keep it at every width. */
 .md-header--cmip .md-header__button.md-logo {
@@ -72,7 +73,6 @@ body {
 .md-header__button.md-logo svg {
   height: 2.6rem;
   width: auto;
-  filter: brightness(0) invert(1);
 }
 
 .md-header--cmip .md-header__title {
@@ -267,6 +267,84 @@ body {
 .cmip-nav .cmip-nav__item:last-child .cmip-nav__dropdown-sub {
   left: auto;
   right: 100%;
+}
+
+/* ── Version selector (mike) ─────────────────────────────────────── */
+/* Material positions .md-header__topic absolutely for its title swap; here it
+   is only a host for the dropdown, so put it back in normal flow. */
+.cmip-version {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cmip-version .md-header__topic {
+  position: relative;
+  display: flex;
+  align-items: center;
+  transform: none;
+  opacity: 1;
+}
+
+.cmip-version .md-version {
+  font-family: var(--cmip-font-body);
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.cmip-version .md-version__current {
+  color: var(--cmip-white);
+}
+
+.cmip-version .md-version__current:hover,
+.cmip-version .md-version:focus-within .md-version__current {
+  color: var(--cmip-gold);
+}
+
+/* List: navy panel to match the nav dropdowns */
+.cmip-version .md-version__list {
+  background: var(--cmip-navy);
+  color: var(--cmip-white);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.5rem 1rem rgba(14, 15, 15, 0.15);
+}
+
+.cmip-version .md-version__link {
+  color: var(--cmip-white);
+}
+
+.cmip-version .md-version__link:hover,
+.cmip-version .md-version__link:focus {
+  color: var(--cmip-gold);
+}
+
+/* Outdated-version banner: crimson, as the brand's warning colour */
+[data-md-component="outdated"] {
+  background: var(--cmip-crimson);
+  color: var(--cmip-white);
+}
+
+[data-md-component="outdated"] a {
+  color: var(--cmip-white);
+  text-decoration: underline;
+}
+
+/* ── Fallback banner (unapproved hostname) ────────────────────────────────── */
+/* Inserted by stylesheets/fallback-banner.js as the first thing on the page. */
+.cmip-fallback-banner {
+  padding: 0.55rem 1.2rem;
+  background: var(--cmip-gold);
+  color: var(--cmip-black);
+  font-family: var(--cmip-font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.cmip-fallback-banner a {
+  color: var(--cmip-black);
+  text-decoration: underline;
 }
 
 /* ── Typography: Akshar headings, Plus Jakarta Sans body ─────────── */

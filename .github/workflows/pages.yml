@@ -1,24 +1,46 @@
-name: Deploy site to GitHub Pages
+name: Deploy versioned site (mike)
+
+# push to main       -> publishes the "dev" version (hidden from the dropdown)
+# GitHub release     -> publishes that release under its publish date
+#                       (shown as 26.Nov.05), moves the "latest" alias to it,
+#                       and makes "latest" the default the site root redirects to
+#
+# mike keeps every version on the gh-pages branch, but that branch is only
+# storage. Pages itself is still deployed as an artifact, exactly as before, so
+# Settings > Pages > Source stays on "GitHub Actions".
 
 on:
   push:
     branches: [main]
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write   # mike pushes the gh-pages storage branch
   pages: write
   id-token: write
 
+# Never cancel a run part-way: mike pushes to gh-pages, and an interrupted push
+# can leave the branch behind. Queue runs instead.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
+
+env:
+  MKDOCS_CONFIG: src/mkdocs.yml
+  # Points the repo link at whichever repository this runs in,
+  # so a copy of this template needs no edit.
+  REPO_URL: ${{ github.server_url }}/${{ github.repository }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # mike needs the full history and the gh-pages branch, not a shallow clone.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -29,16 +51,67 @@ jobs:
       - name: Install dependencies
         run: pip install -r src/requirements.txt
 
-      - name: Build site
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # Push to main (or a manual run): publish "dev" and hide it from readers.
+      # It stays reachable by its URL.
+      - name: Deploy dev
+        if: github.event_name != 'release'
+        run: |
+          mike deploy --config-file "$MKDOCS_CONFIG" --push dev
+          mike props --config-file "$MKDOCS_CONFIG" --push --set hidden=true dev
+
+      # Until a release exists there is no "latest", so the site root would be
+      # empty. Point it at dev for now; the first release replaces this.
+      - name: Point root at dev until a release exists
+        if: github.event_name != 'release'
+        run: |
+          if mike list --config-file "$MKDOCS_CONFIG" | grep -q '\[latest\]'; then
+            echo "A latest release exists; leaving the root redirect alone."
+          else
+            mike set-default --config-file "$MKDOCS_CONFIG" --push dev
+          fi
+
+      # Published release: the version id is the publish date (UTC) as
+      # YYYY.MM.DD, which is what the URL and the dropdown ordering use (dots,
+      # numeric, so mike sorts it correctly). The label readers see in the
+      # dropdown is the same date as YY.Mon.DD, e.g. 26.Nov.05. A second release
+      # on the same day gets .2, .3, ... instead of overwriting the first.
+      # The tag name is only logged. Pre-releases are skipped so they never
+      # become "latest".
+      - name: Deploy release
+        if: github.event_name == 'release' && !github.event.release.prerelease
         env:
-          # Points the repo link at whichever repository this runs in,
-          # so a copy of this template needs no edit.
-          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
-        run: mkdocs build --config-file src/mkdocs.yml
+          TAG: ${{ github.event.release.tag_name }}
+          PUBLISHED: ${{ github.event.release.published_at }}
+        run: |
+          DATE="$(date -u -d "$PUBLISHED" +%Y.%m.%d)"
+          LABEL="$(LC_ALL=C date -u -d "$PUBLISHED" +%y.%b.%d)"
+          VERSION="$DATE"
+          TITLE="$LABEL"
+          N=2
+          while mike list --config-file "$MKDOCS_CONFIG" | grep -qE "^${VERSION}( |$)"; do
+            VERSION="${DATE}.${N}"
+            TITLE="${LABEL}.${N}"
+            N=$((N + 1))
+          done
+          echo "Release $TAG -> version $VERSION (shown as $TITLE)"
+          mike deploy --config-file "$MKDOCS_CONFIG" --push --title "$TITLE" --update-aliases "$VERSION" latest
+          mike set-default --config-file "$MKDOCS_CONFIG" --push latest
+
+      # Package the stored versions as the Pages artifact. The worktree's .git
+      # pointer file is removed so it is not uploaded with the site.
+      - name: Collect site from gh-pages
+        run: |
+          git worktree add _site gh-pages
+          rm -f _site/.git
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: build
+          path: _site
 
   deploy:
     needs: build
