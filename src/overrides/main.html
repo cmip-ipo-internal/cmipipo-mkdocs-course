@@ -1,11 +1,19 @@
 {% extends "base.html" %}
 
 {#-
-  Hands the extra.fallback_banner settings from mkdocs.yml to
-  stylesheets/fallback-banner.js, which decides whether to show the banner.
+  Writes ONE author-details tag, with the details as attributes: author=, github=
+  and contact=. It is the FIRST thing in <head>: this overrides Material's
+  site_meta block (which opens the head with the charset tag) and puts the tag in
+  front of it, then renders Material's own site_meta unchanged via super().
+
+  It is deliberately hard-coded here and NOT read from mkdocs.yml. It is IN
+  ADDITION to the standard <meta name="author"> tag that Material writes from
+  site_author (or from a page's own "author:" front matter), which is left
+  exactly as it is.
 -#}
-{% block extrahead %}
-  <script>window.CMIP_FALLBACK_BANNER = {{ (config.extra.fallback_banner | default({}, true)) | tojson }};</script>
+{% block site_meta %}
+  <meta author="Daniel Ellis" github="wolfiex" contact="product@bytevorous.com">
+  {{ super() }}
 {% endblock %}
 
 {#-

@@ -4,8 +4,8 @@
  * Shows a warning banner when this site is served from a hostname that is not
  * on the approved list. Same idea as the cmip-fallback WordPress plugin.
  *
- * Settings live in src/mkdocs.yml under extra.fallback_banner and reach this
- * script through window.CMIP_FALLBACK_BANNER (set in overrides/main.html):
+ * Settings are the SETTINGS block just below (the same convention as matomo.js),
+ * not mkdocs.yml:
  *   enabled    true/false
  *   hostnames  approved hostnames; "*.example.org" matches any subdomain
  *   text       the warning message
@@ -15,8 +15,18 @@
  * An empty hostname (a page opened straight from disk) never shows the banner.
  */
 (function () {
-  var cfg = window.CMIP_FALLBACK_BANNER;
-  if (!cfg || cfg.enabled === false) return;
+  // ==========================================
+  // SETTINGS — EDIT THESE VALUES
+  // ==========================================
+  var cfg = {
+    enabled: true,   // false turns the banner off
+    hostnames: ["localhost", "127.0.0.1", "cmip-ipo-internal.github.io"],
+    text: "This is not the official version of this site.",
+    url: "https://cmip-ipo-internal.github.io/cmipipo-mkdocs-course/",
+    link_text: "Go to the official site"
+  };
+
+  if (cfg.enabled === false) return;
 
   var host = (location.hostname || '').toLowerCase();
   if (!host) return;
