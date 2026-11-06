@@ -55,18 +55,38 @@ body {
 .md-header--cmip .md-header__inner {
   display: flex;
   align-items: center;
+  /* The logo is pinned to the page edge (below), so it is no longer in this row.
+     The nav stays at the right of the row, as it was when the logo's auto margin
+     pushed it there. */
+  justify-content: flex-end;
   gap: 1.5rem;
-  padding: 0.5rem 1.2rem;
+  /* The right side is reserved for the version label and the icons under it,
+     which are pinned to the page edge, so the nav never runs underneath them
+     on narrow screens. The left side is reserved for the pinned logo (its .5rem
+     inset + 12.4rem width + a 1.5rem gap). */
+  padding: 0.5rem 5.6rem 0.5rem 14.5rem;
+  /* With the logo out of the row, nothing in it sets the bar's height any more.
+     This restores the height the logo used to give it. */
+  box-sizing: border-box;
+  min-height: 4.8rem;
 }
 
 /* Logo. The supplied file (assets/cmip-logo-white.svg) is white artwork, so it
    sits on the navy bar as-is. If you swap in a navy version, add
    filter: brightness(0) invert(1) to the img/svg rule below.
-   margin-right:auto pushes the nav, search and repo icon to the right.
+   Pinned to the far left of the page, mirroring the version label and icons on
+   the far right (the header, not the centred content grid, is the positioned
+   parent). left .5rem plus the button's own .4rem padding puts the artwork
+   .9rem from the edge, the same inset as the right-hand items. Centred
+   vertically on the header.
    Material hides the logo below 76.25em; we keep it at every width. */
 .md-header--cmip .md-header__button.md-logo {
   display: block;
-  margin-right: auto;
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
 }
 
 .md-header__button.md-logo img,
@@ -85,6 +105,16 @@ body {
 .md-header--cmip .md-header__button[for="__search"] {
   display: flex;
   align-items: center;
+  /* No box around the icon: Material gives the button .4rem padding and .2rem margin. */
+  padding: 0;
+  margin: 0;
+  /* Pinned to the far right of the page, in a row directly under the version
+     label (which sits at top .3rem / right .9rem). The repo icon takes the
+     rightmost slot, so this one sits immediately to its left: right = .9rem
+     inset + one 1.2rem icon. */
+  position: absolute;
+  top: 1.6rem;
+  right: 2.1rem;
   color: var(--cmip-white);
   cursor: pointer;
 }
@@ -101,6 +131,21 @@ body {
   overflow: hidden;
 }
 
+/* The search form is only the box that opens when the icon is clicked. It is
+   taken out of the header row and anchored in the same row as the icons, just to
+   the left of them (icons occupy right .9rem to 3.3rem), so it opens leftwards
+   from the icon: on screen, centred on the icons, and never past the page edge.
+   Material insets its inner box .2rem from the top of this element, so top 1.1rem
+   centres the 1.8rem box on the 1.2rem icons (at top 1.6rem). right 3.8rem leaves
+   .5rem to the icons and keeps it clear of the version label's left edge. */
+.md-header--cmip .md-search {
+  position: absolute;
+  top: 1.1rem;
+  right: 3.8rem;
+  margin: 0;
+  z-index: 4;
+}
+
 /* Once opened, Material widens it again; let the results escape the box. */
 [data-md-toggle="search"]:checked ~ .md-header--cmip .md-search__inner {
   overflow: visible;
@@ -113,11 +158,30 @@ body {
   align-items: center;
   width: auto;
   max-width: none;
-  margin-left: 0;
+  /* Rightmost slot of the icon row under the version label, lined up with the
+     label's right edge. Taken out of the flex row, so no gap applies to it. */
+  position: absolute;
+  top: 1.6rem;
+  right: 0.9rem;
+  margin: 0;
 }
 
+/* No box around the repo icon: Material makes it 2rem x 2.4rem with the glyph
+   offset .6rem inside it. */
 .md-header--cmip .md-source {
+  display: flex;
+  align-items: center;
   color: var(--cmip-white);
+}
+
+.md-header--cmip .md-source__icon {
+  width: auto;
+  height: auto;
+}
+
+.md-header--cmip .md-source__icon svg {
+  display: block;
+  margin: 0;
 }
 
 .md-header--cmip .md-source:hover {
@@ -368,13 +432,40 @@ body {
   border-bottom: 1px solid var(--cmip-rule);
   font-family: 'Lexend', var(--cmip-font-body);
   line-height: 1.2;
+  /* A fixed height, so the header below can be offset by exactly this much. */
+  box-sizing: border-box;
+  height: var(--cmip-notice-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 [data-md-component="outdated"] .md-banner .md-banner__inner {
-  margin: 0.08rem auto;
+  margin: 0 auto;
   font-size: 0.66rem;
   line-height: 1.2;
   text-align: center;
+}
+
+/* Always visible: the notice stays pinned to the very top of the screen while the
+   page scrolls, above the header (z-index 5 against the header's 4). It is in the
+   normal flow, so at the top of the page it simply pushes everything down and
+   never covers content. Material removes its [hidden] attribute only on a version
+   that is not the default, so a latest page has no notice and no offset. */
+:root {
+  --cmip-notice-h: 1.15rem;
+}
+
+[data-md-component="outdated"] {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+/* The header is sticky at top 0 by default, which would slide it underneath the
+   pinned notice. When the notice is showing, park the header just below it. */
+body:has([data-md-component="outdated"]:not([hidden])) .md-header--cmip {
+  top: var(--cmip-notice-h);
 }
 
 [data-md-component="outdated"] .md-banner a {
