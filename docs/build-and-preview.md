@@ -47,4 +47,4 @@ Visitors with the old link are sent to the new page, within the same version.
 
 ## Unofficial-copy banner
 
-A yellow warning banner appears at the top of every page when the site is served from a hostname that is not approved, such as a fork or mirror. Edit `fallback_banner` under `extra` in `src/mkdocs.yml` to change the approved hostnames or the message, or set `enabled: false` to turn it off.
+A yellow warning banner appears at the top of every page when the site is served from a hostname that is not approved, such as a fork or mirror. Edit the SETTINGS block at the top of `docs/stylesheets/fallback-banner.js` to change the approved hostnames or the message, or set `enabled: false` to turn it off.

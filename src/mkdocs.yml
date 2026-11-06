@@ -65,23 +65,14 @@ extra:
   version:
     provider: mike
     default: latest
+
+  # The footer's "Made with Material for MkDocs" link points here, at the template
+  # repository this site is built from (see overrides/partials/copyright.html).
+  template_url: https://github.com/cmip-ipo-internal/cmipipo-mkdocs-course
+
   # Top-level nav titles kept out of the top bar (still in the sidebar).
   # Empty: the whole nav is shown in the top bar.
   nav_exclude: []
-
-  # Warning banner for copies of the site served from an unapproved hostname
-  # (see stylesheets/fallback-banner.js). Same idea as the cmip-fallback
-  # WordPress plugin. Add every hostname that is allowed to serve the site;
-  # "*.example.org" matches any subdomain. Set enabled: false to turn it off.
-  fallback_banner:
-    enabled: true
-    hostnames:
-      - localhost
-      - 127.0.0.1
-      - cmip-ipo-internal.github.io
-    text: This is not the official version of this site.
-    url: https://cmip-ipo-internal.github.io/cmipipo-mkdocs-course/
-    link_text: Go to the official site
 
 extra_css:
   - stylesheets/cmip.css
